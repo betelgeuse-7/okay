@@ -32,7 +32,7 @@ u := User{
 errs := okay.Validate(u)
 
 // []string{
-//    "username length is 6 minimum",
+//    "username length is 6 minimum" ,
 //    "invalid email",
 // }
 
