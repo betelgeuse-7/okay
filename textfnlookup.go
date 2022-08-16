@@ -64,7 +64,6 @@ func __doesnotendwith(v *TextValue, c constraint) (string, error) {
 
 func __isipv4(v *TextValue, c constraint) (string, error) {
 	ip := net.ParseIP(v.val)
-	fmt.Println("ipv4 called: ", ip)
 	if ip == nil {
 		return fmt.Sprintf("%s must be a valid IPv4 address", v.fieldName), nil
 	}
@@ -73,7 +72,6 @@ func __isipv4(v *TextValue, c constraint) (string, error) {
 
 func __isipv6(v *TextValue, c constraint) (string, error) {
 	ip := net.ParseIP(v.val)
-	fmt.Println("ipv6 called: ", ip)
 	if ip == nil {
 		return fmt.Sprintf("%s must be a valid IPv6 address", v.fieldName), nil
 	}
