@@ -137,3 +137,25 @@ func TestAlpha(t *testing.T) {
 	}
 	t.Logf("validation errors: %v\n", ex)
 }
+
+type e struct {
+	ee string
+}
+
+func (e e) Okay() (ValidationErrors, error) {
+	ex, err := Text(e.ee, "ee").Required().IsOnlyDigits().Errors()
+	if err != nil {
+		return ex, err
+	}
+	return ex, err
+}
+
+func TestIsOnlyDigits(t *testing.T) {
+	e := e{ee: "958013h68913"}
+	ex, err := Validate(e)
+	if err != nil {
+		t.Logf("error: %s\n", err.Error())
+		return
+	}
+	t.Logf("validation errors: %v\n", ex)
+}

@@ -1,3 +1,5 @@
 
 text.go
 	TODO DRY
+textfnlookup.go
+	TODO URL, URI, dates, credit cards, ...

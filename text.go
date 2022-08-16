@@ -103,6 +103,11 @@ func (v *TextValue) IsAlphanumeric() *TextValue {
 	return v
 }
 
+func (v *TextValue) IsOnlyDigits() *TextValue {
+	v.newConstraint("isonlydigits")
+	return v
+}
+
 func (v *TextValue) validate() (ValidationErrors, error) {
 	var errs ValidationErrors
 	for _, c := range v.constraints {

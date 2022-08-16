@@ -6,6 +6,8 @@ import (
 	"net/mail"
 )
 
+// TODO URL, URI, dates, credit cards, ...
+
 type textConstraintFn func(*TextValue, constraint) (string, error)
 
 var _TEXT_CONSTRAINT_FN_LOOKUP = map[string]textConstraintFn{
@@ -13,6 +15,7 @@ var _TEXT_CONSTRAINT_FN_LOOKUP = map[string]textConstraintFn{
 	"isemail": __isemail, "is": __is, "contains": __contains, "startswith": __startswith,
 	"doesnotstartwith": __doesnotstartwith, "__endswith": __endswith, "doesnotendwith": __doesnotendwith,
 	"isipv4": __isipv4, "isipv6": __isipv6, "isalpha": __isalpha, "isalphanumeric": __isalphanumeric,
+	"isonlydigits": __isonlydigits,
 }
 
 func __required(v *TextValue, c constraint) (string, error) {
@@ -95,6 +98,17 @@ func __isalphanumeric(v *TextValue, c constraint) (string, error) {
 		ok := ((char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || (char >= '0' && char <= '9'))
 		if !(ok) {
 			return fmt.Sprintf("%s must not contain non-alphanumeric characters ('%s')", v.fieldName, string(char)), nil
+		}
+	}
+	return "", nil
+}
+
+func __isonlydigits(v *TextValue, c constraint) (string, error) {
+	val := v.val
+	for _, char := range val {
+		ok := char >= '0' && char <= '9'
+		if !(ok) {
+			return fmt.Sprintf("%s must not contain non-numeric characters ('%s')", v.fieldName, string(char)), nil
 		}
 	}
 	return "", nil
