@@ -2,8 +2,6 @@ package okay
 
 import (
 	"errors"
-	"fmt"
-	"strings"
 )
 
 type TextValue struct {
@@ -21,13 +19,10 @@ func (v *TextValue) newConstraint(name string, params ...interface{}) {
 }
 
 // a validator function to validate inputs of type string (aka text)
-func Text(val string, fieldName string) *TextValue {
+func (o *O) Text(val string, fieldName string) *TextValue {
 	v := &TextValue{val: val, fieldName: fieldName}
+	o.texts = append(o.texts, v)
 	return v
-}
-
-func (v *TextValue) Errors() (ValidationErrors, error) {
-	return v.validate()
 }
 
 // Value is required. The value cannot have a zero value.
@@ -124,99 +119,4 @@ func (v *TextValue) validate() (ValidationErrors, error) {
 		}
 	}
 	return errs, nil
-}
-
-// TODO DRY
-
-func (v *TextValue) doMinLengthCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doMinLengthCheck: error: minimum length parameter is not given")
-	}
-	min := c.params[0].(uint)
-	if uint(len(v.val)) < min {
-		return fmt.Sprintf("minimum length for %s is %d", v.fieldName, min), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doMaxLengthCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doMaxLengthCheck: error: maximum length parameter is not given")
-	}
-	max := c.params[0].(uint)
-	if uint(len(v.val)) > max {
-		return fmt.Sprintf("maximum length for %s is %d", v.fieldName, max), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doStringEquality(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doStringEquality: error: compare string is not given")
-	}
-	compare := c.params[0].(string)
-	if v.val != compare {
-		return fmt.Sprintf("%s must be '%s'", v.fieldName, compare), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doContainsCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doContainsCheck: error: substring is not given")
-	}
-	str := c.params[0].(string)
-	ok := strings.Contains(v.val, str)
-	if !(ok) {
-		return fmt.Sprintf("%s must contain '%s'", v.fieldName, str), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doStartsWithCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doStartsWithCheck: error: prefix is not given")
-	}
-	str := c.params[0].(string)
-	ok := strings.HasPrefix(v.val, str)
-	if !(ok) {
-		return fmt.Sprintf("%s must start with '%s'", v.fieldName, str), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doDoesNotStartWithCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doDoesNotStartWithCheck: error: prefix is not given")
-	}
-	str := c.params[0].(string)
-	ok := strings.HasPrefix(v.val, str)
-	if ok {
-		return fmt.Sprintf("%s must not start with '%s'", v.fieldName, str), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doEndsWithCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doEndsWithCheck: error: suffix is not given")
-	}
-	str := c.params[0].(string)
-	ok := strings.HasSuffix(v.val, str)
-	if !(ok) {
-		return fmt.Sprintf("%s must end with '%s'", v.fieldName, str), nil
-	}
-	return "", nil
-}
-
-func (v *TextValue) doDoesNotEndWithCheck(c constraint) (string, error) {
-	if len(c.params) == 0 {
-		return "", errors.New("doDoesNotEndWithCheck: error: suffix is not given")
-	}
-	str := c.params[0].(string)
-	ok := strings.HasSuffix(v.val, str)
-	if ok {
-		return fmt.Sprintf("%s must not end with '%s'", v.fieldName, str), nil
-	}
-	return "", nil
 }
